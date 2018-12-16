@@ -160,3 +160,46 @@ public class Boss {
 
 ## Aware注入spring底层组建的思考
 
+
+
+
+
+## @Profile环境搭建
+
+spring提供的可以根据当前环境，动态的激活和切换一系列组建的功能
+
+```
+@Profile("test")
+@Bean("testdatasource")
+public DataSource dataSource(@Value("database.password") String pwd) throws PropertyVetoException {
+    ComboPooledDataSource dataSource = new ComboPooledDataSource();
+    dataSource.setUser(dbUserName);
+    dataSource.setPassword(pwd);
+    dataSource.setDriverClass(driverClass);
+    dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test");
+
+    return dataSource;
+}
+
+@Profile("dev")
+@Bean("devdatasource")
+public DataSource dataSource01(@Value("database.password") String pwd) throws PropertyVetoException {
+    ComboPooledDataSource dataSource = new ComboPooledDataSource();
+    dataSource.setUser(dbUserName);
+    dataSource.setPassword(pwd);
+    dataSource.setDriverClass(driverClass);
+    dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/dev");
+
+    return dataSource;
+}
+
+
+
+
+AnnotationConfigApplicationContext applicationContext;
+        applicationContext = new AnnotationConfigApplicationContext();
+        applicationContext.getEnvironment().setActiveProfiles("test");
+        applicationContext.register(MainConfigOfProfile.class);
+        applicationContext.refresh();
+
+```
